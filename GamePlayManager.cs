@@ -20,8 +20,12 @@ public class GamePlayManager : MonoBehaviour {
         }
         set
         {
-            if(OnStateChange(value) == true)
-                _currentState = value;
+            if (CheckStateChange(value) == true)
+            {
+                OnStateEnd(_currentState);
+                _currentState = value;                
+                OnStateStart(_currentState);
+            }
             else
                 Debug.Log("Nope");
         }
@@ -29,7 +33,86 @@ public class GamePlayManager : MonoBehaviour {
 
     private State _currentState;
 
-    bool OnStateChange(State newState)
+    #region StateMachine
+    /// <summary>
+    /// Chiamatoi dopo aver settato un nuovo state come current <paramref name="newState"/>
+    /// </summary>
+    /// <param name="newState"></param>
+    void OnStateStart(State newState)
+    {
+        switch (newState)
+        {
+            case State.Setup:
+                Debug.Log("Enter" + CurrentState);
+                break;
+            case State.Strategic:
+                Debug.Log("Enter" + CurrentState);                
+                break;
+            case State.Combat:
+                Debug.Log("Enter" + CurrentState);
+                break;
+            case State.End:
+                Debug.Log("Enter" + CurrentState);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Controlla in che current sei
+    /// </summary>
+    void OnStateUpdate()
+    {
+        switch (CurrentState)
+        {
+            case State.Setup:
+                Debug.Log("Setup");
+                break;
+            case State.Strategic:
+                Debug.Log("Strategic");
+                break;
+            case State.Combat:
+                Debug.Log("Combat");
+                break;
+            case State.End:
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Chiamata prima di uscire dallo stato <paramref name="oldState"/>
+    /// </summary>
+    /// <param name="oldState"></param>
+    void OnStateEnd(State oldState)
+    {
+        switch (oldState)
+        {
+            case State.Setup:
+                Debug.Log("Exit" + CurrentState);
+                break;
+            case State.Strategic:
+                Debug.Log("Exit" + CurrentState);
+                break;
+            case State.Combat:
+                Debug.Log("Exit" + CurrentState);
+                break;
+            case State.End:
+                Debug.Log("Exit" + CurrentState);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Controlla se è possibile cambiare lo stato in quello richiesto in <paramref name="newState"/>
+    /// </summary>
+    /// <param name="newState"></param>
+    /// <returns></returns>
+    bool CheckStateChange(State newState)
     {
         switch (newState)
         {
@@ -54,8 +137,7 @@ public class GamePlayManager : MonoBehaviour {
                 break;
         }
     }
-
-
+    #endregion
 
     private void Start()
     {
@@ -64,24 +146,15 @@ public class GamePlayManager : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-            CurrentState = State.Strategic;
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            CurrentState = State.Setup;
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            CurrentState = State.Setup;
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            CurrentState = State.Setup;
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+            CurrentState = State.Setup;
 
-        switch (CurrentState)
-        {
-            case State.Setup:
-                Debug.Log("Setup");
-                break;
-            case State.Strategic:
-                Debug.Log("Strategic");
-                break;
-            case State.Combat:
-                Debug.Log("Combat");
-                break;
-            case State.End:
-                break;
-            default:
-                break;
-        }
+        OnStateUpdate();
     }
 }
